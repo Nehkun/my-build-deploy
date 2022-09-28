@@ -1,0 +1,39 @@
+steps:
+# Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - >-
+        asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA
+      - '--build-arg'
+      - 'ENVIRONMENT=${_ENVIRONMENT}'
+      - .
+# Push
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA
+# Deploy
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      [
+        'run',
+        'deploy',
+        'aotga-wms-frontend-staging',
+        '--image',
+        'asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA',
+        '--region',
+        'asia-southeast1',
+        --platform',
+        'mange',
+        '--port',
+        '80',
+        '--allow-unauthenticated',
+        '--min-instances',
+        '0',
+        '--max-instances',
+        '1',
+        ]
