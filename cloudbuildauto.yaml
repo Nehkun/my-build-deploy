@@ -5,16 +5,16 @@ steps:
       - build
       - '-t'
       - >-
-        asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA
+        asia-southeast1-docker.pkg.dev/aotga-production/wms-aotga/aotga-wms-frontend:${TAG_NAME}
       - '--build-arg'
-      - 'ENVIRONMENT=${_ENVIRONMENT}'
+      - 'ENVIRONMENT=production'
       - .
 # Push
   - name: gcr.io/cloud-builders/docker
     args:
       - push
       - >-
-        asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA
+        asia-southeast1-docker.pkg.dev/aotga-production/wms-aotga/aotga-wms-frontend:${TAG_NAME}
 # Deploy
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
@@ -22,13 +22,13 @@ steps:
       [
         'run',
         'deploy',
-        'aotga-wms-frontend-staging',
+        'aotga-wms-frontend-production',
         '--image',
-        'asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/${_IMAGE_NAME}:$COMMIT_SHA',
+        'asia-southeast1-docker.pkg.dev/aotga-production/wms-aotga/aotga-wms-frontend:${TAG_NAME}',
         '--region',
         'asia-southeast1',
         --platform',
-        'mange',
+        'manage',
         '--port',
         '80',
         '--memory',
@@ -37,5 +37,8 @@ steps:
         '--min-instances',
         '0',
         '--max-instances',
-        '1',
+        '3',
         ]
+timeout: '1800s'
+options:
+  machineType: E2_HIGHCPU_32

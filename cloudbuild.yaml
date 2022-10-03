@@ -13,5 +13,5 @@ steps:
       - push
       - >-
         asia-southeast1-docker.pkg.dev/orion-staging-363003/wms-aotga/aotga-wms-frontend:${TAG_NAME}
-#options:
-#  machineType: E2_HIGHCPU_32
+options:
+  machineType: E2_HIGHCPU_32
